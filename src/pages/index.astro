@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/site';
+import { formatDate, pluralizar } from '../lib/utils';
+
+const asignaturas = (await getCollection('asignaturas')).sort(
+  (a, b) => a.data.orden - b.data.orden || a.data.nombre.localeCompare(b.data.nombre, 'es'),
+);
+
+const apuntes = (await getCollection('apuntes', ({ data }) => import.meta.env.DEV || !data.borrador)).sort(
+  (a, b) => b.data.fecha.getTime() - a.data.fecha.getTime(),
+);
+
+const apuntesPorAsignatura = new Map<string, number>();
+for (const apunte of apuntes) {
+  const id = apunte.data.asignatura.id;
+  apuntesPorAsignatura.set(id, (apuntesPorAsignatura.get(id) ?? 0) + 1);
+}
+
+const recientes = apuntes.slice(0, 6);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <p class="eyebrow">Universidad de Málaga · MUII</p>
+    <h1>Cuaderno de apuntes</h1>
+    <p class="lead">
+      Notas, esquemas y ejercicios del Máster Universitario en Ingeniería Informática. Un sitio
+      estático, rápido y pensado para escribir en Markdown.
+    </p>
+    <div class="hero-stats">
+      <span><strong>{asignaturas.length}</strong> asignaturas</span>
+      <span><strong>{apuntes.length}</strong> apuntes publicados</span>
+    </div>
+  </section>
+
+  <section id="asignaturas" class="section">
+    <header class="section-header">
+      <h2>Asignaturas</h2>
+      <p class="muted">El contenido está organizado por asignatura.</p>
+    </header>
+
+    {asignaturas.length === 0 ? (
+      <p class="empty">
+        Todavía no hay asignaturas. Crea un archivo en <code>src/content/asignaturas</code>.
+      </p>
+    ) : (
+      <div class="grid">
+        {asignaturas.map((asignatura) => {
+          const total = apuntesPorAsignatura.get(asignatura.id) ?? 0;
+          return (
+            <a
+              class="card asignatura-card"
+              href={url(`/asignaturas/${asignatura.id}/`)}
+              style={`--card-accent: ${asignatura.data.color}`}
+            >
+              <div class="card-top">
+                <span class="dot" aria-hidden="true"></span>
+                <span class="badge">
+                  {asignatura.data.semestre}º semestre · {asignatura.data.curso}
+                </span>
+              </div>
+              <h3>{asignatura.data.nombre}</h3>
+              {asignatura.data.descripcion && <p>{asignatura.data.descripcion}</p>}
+              <span class="card-meta">
+                {pluralizar(total, 'apunte', 'apuntes')} <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </section>
+
+  {recientes.length > 0 && (
+    <section class="section">
+      <header class="section-header">
+        <h2>Últimos apuntes</h2>
+        <p class="muted">Lo último que he añadido al cuaderno.</p>
+      </header>
+
+      <ul class="note-list">
+        {recientes.map((apunte) => {
+          const asignatura = asignaturas.find((item) => item.id === apunte.data.asignatura.id);
+          return (
+            <li>
+              <a class="note-row" href={url(`/apuntes/${apunte.id}/`)}>
+                <span class="note-date">{formatDate(apunte.data.fecha)}</span>
+                <span class="note-title">{apunte.data.titulo}</span>
+                <span class="note-subject">{asignatura?.data.nombre ?? 'Sin asignatura'}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+</BaseLayout>

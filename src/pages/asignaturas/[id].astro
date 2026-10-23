@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { url } from '../../lib/site';
+import { formatDate, pluralizar } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const asignaturas = await getCollection('asignaturas');
+  return asignaturas.map((asignatura) => ({
+    params: { id: asignatura.id },
+    props: { asignatura },
+  }));
+}
+
+interface Props {
+  asignatura: CollectionEntry<'asignaturas'>;
+}
+
+const { asignatura } = Astro.props;
+
+const apuntes = (
+  await getCollection(
+    'apuntes',
+    ({ data }) =>
+      data.asignatura.id === asignatura.id && (import.meta.env.DEV || !data.borrador),
+  )
+).sort((a, b) => a.data.fecha.getTime() - b.data.fecha.getTime());
+---
+
+<BaseLayout
+  title={asignatura.data.nombre}
+  description={asignatura.data.descripcion || `${asignatura.data.nombre} · Cuaderno MUII`}
+>
+  <nav class="breadcrumbs" aria-label="Migas de pan">
+    <a href={url('/')}>Inicio</a>
+    <span aria-hidden="true">/</span>
+    <span>{asignatura.data.nombre}</span>
+  </nav>
+
+  <header class="page-header" style={`--page-accent: ${asignatura.data.color}`}>
+    <p class="eyebrow">{asignatura.data.curso} · {asignatura.data.semestre}º semestre</p>
+    <h1>{asignatura.data.nombre}</h1>
+    {asignatura.data.descripcion && <p class="lead">{asignatura.data.descripcion}</p>}
+    <p class="muted">{pluralizar(apuntes.length, 'apunte disponible', 'apuntes disponibles')}</p>
+  </header>
+
+  {
+    apuntes.length === 0 ? (
+      <p class="empty">
+        Aún no hay apuntes de esta asignatura. Crea un archivo en
+        <code>src/content/apuntes/{asignatura.id}/</code>.
+      </p>
+    ) : (
+      <ol class="apuntes-lista">
+        {apuntes.map((apunte, indice) => (
+          <li>
+            <a class="apunte-card" href={url(`/apuntes/${apunte.id}/`)}>
+              <span class="apunte-num">{String(indice + 1).padStart(2, '0')}</span>
+              <div class="apunte-info">
+                <h3>{apunte.data.titulo}</h3>
+                <p>
+                  {apunte.data.tema && <span class="tema">{apunte.data.tema}</span>}
+                  {apunte.data.tema && <span aria-hidden="true"> · </span>}
+                  {formatDate(apunte.data.fecha)}
+                  {apunte.data.borrador && <span class="borrador">Borrador</span>}
+                </p>
+              </div>
+              <span class="apunte-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/site';
+---
+
+<BaseLayout title="Página no encontrada">
+  <section class="error-page">
+    <p class="eyebrow">Error 404</p>
+    <h1>Aquí no hay apuntes.</h1>
+    <p>
+      La página que buscas no existe o se ha movido. Vuelve al inicio para seguir consultando el
+      cuaderno.
+    </p>
+    <a class="boton" href={url('/')}>Volver al inicio</a>
+  </section>
+</BaseLayout>
