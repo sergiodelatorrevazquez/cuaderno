@@ -1,4 +1,6 @@
 import { defineConfig } from 'astro/config';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // En GitHub Pages, BASE_PATH lo inyecta el workflow (por ejemplo "/cuaderno").
 // En Vercel o en local se queda en "/".
@@ -13,6 +15,8 @@ export default defineConfig({
     format: 'directory',
   },
   markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
     shikiConfig: {
       theme: 'github-dark',
     },

@@ -652,6 +652,16 @@ main {
   overflow-wrap: break-word;
 }
 
+.prose .katex {
+  font-size: 1.02em;
+}
+
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.4rem 0;
+}
+
 .prose > * + * {
   margin-top: 1.15em;
 }
