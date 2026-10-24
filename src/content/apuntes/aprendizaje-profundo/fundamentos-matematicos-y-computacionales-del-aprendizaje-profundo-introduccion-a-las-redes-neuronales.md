@@ -1,7 +1,7 @@
 ---
 titulo: "Fundamentos matemáticos y computacionales del aprendizaje profundo: introducción a las redes neuronales"
 asignatura: aprendizaje-profundo
-fecha: 2026-10-22
+fecha: 2026-10-21
 tema: "Semana 1 - Sesión 1"
 tags: [fundamentos, tensores, capas-afines, relu, perceptrón-multicapa, parámetros]
 resumen: "Introducción a los modelos de aprendizaje profundo como composición de funciones. Tensores, formas, parámetros, capas afines, activaciones ReLU y un primer ejemplo con una red de dos capas."
