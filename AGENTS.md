@@ -19,7 +19,6 @@ Cuando quieras añadir una nueva asignatura al cuaderno (por ejemplo, al inicio 
    - Código de la asignatura si lo conoce (opcional). Ej: "MUII-AA"
    - ¿Pertenece al curso 2026/2027 o a otro? (por defecto: `2026/2027`)
    - ¿Semestre 1 o 2? (por defecto: `1`)
-   - Descripción corta para la tarjeta de la portada (opcional)
    - Color en formato `#rrggbb` para el acento (opcional, por defecto `#6366f1`)
    - Orden en la portada (opcional, numérico, menor = aparece primero)
 
@@ -38,7 +37,6 @@ Cuando quieras añadir una nueva asignatura al cuaderno (por ejemplo, al inicio 
    codigo: "MUII-XX"  # opcional, omitir si no se indica
    curso: "2026/2027"
    semestre: 1
-   descripcion: "Descripción corta de la asignatura."
    color: "#6366f1"
    orden: 0
    ---
@@ -48,7 +46,6 @@ Cuando quieras añadir una nueva asignatura al cuaderno (por ejemplo, al inicio 
    - `codigo`: opcional
    - `curso`: string, por defecto `2026/2027`
    - `semestre`: número 1 o 2, por defecto `1`
-   - `descripcion`: string, por defecto `""`
    - `color`: regex `^#[0-9a-fA-F]{6}$`, por defecto `#6366f1`
    - `orden`: número, por defecto `0`
 

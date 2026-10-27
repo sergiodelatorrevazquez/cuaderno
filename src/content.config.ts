@@ -9,7 +9,6 @@ const asignaturas = defineCollection({
     codigo: z.string().optional(),
     curso: z.string().default('2026/2027'),
     semestre: z.number().int().min(1).max(2).default(1),
-    descripcion: z.string().default(''),
     color: z
       .string()
       .regex(/^#[0-9a-fA-F]{6}$/, 'El color debe tener el formato #rrggbb')

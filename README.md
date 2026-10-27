@@ -70,7 +70,6 @@ nombre: Sistemas Inteligentes
 codigo: MUII-SI
 curso: 2026/2027
 semestre: 1
-descripcion: Agentes, búsqueda y aprendizaje automático.
 color: "#6366f1"
 orden: 1
 ---
@@ -82,7 +81,6 @@ orden: 1
 | `codigo` | No | Código del plan de estudios. |
 | `curso` | No | Por defecto, `2026/2027`. |
 | `semestre` | No | `1` o `2`. Por defecto, `1`. |
-| `descripcion` | No | Texto corto para la tarjeta. |
 | `color` | No | Color de acento en formato `#rrggbb`. |
 | `orden` | No | Orden en la portada (menor primero). |
 

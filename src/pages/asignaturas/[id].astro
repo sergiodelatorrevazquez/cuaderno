@@ -30,7 +30,7 @@ const apuntes = (
 
 <BaseLayout
   title={asignatura.data.nombre}
-  description={asignatura.data.descripcion || `${asignatura.data.nombre} · Cuaderno MUII`}
+  description={`${asignatura.data.nombre} · Cuaderno MUII`}
 >
   <nav class="breadcrumbs" aria-label="Migas de pan">
     <a href={url('/')}>Inicio</a>
@@ -41,7 +41,6 @@ const apuntes = (
   <header class="page-header" style={`--page-accent: ${asignatura.data.color}`}>
     <p class="eyebrow">{asignatura.data.curso} · {asignatura.data.semestre}º semestre</p>
     <h1>{asignatura.data.nombre}</h1>
-    {asignatura.data.descripcion && <p class="lead">{asignatura.data.descripcion}</p>}
     <p class="muted">{pluralizar(apuntes.length, 'apunte disponible', 'apuntes disponibles')}</p>
   </header>
 
