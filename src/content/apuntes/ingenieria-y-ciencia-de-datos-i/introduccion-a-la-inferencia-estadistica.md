@@ -123,18 +123,17 @@ Métodos para controlar esto:
 
 ## Actualización bayesiana (intuición)
 
-En el enfoque bayesiano, el parámetro $\theta$ es tratado as **zuhanale variable**, not as a fixed unknown. Se inicia con a **prior** $P(\theta)$ and se actualiza con la evidencia $D$:
+En el enfoque bayesiano, el parámetro $\theta$ es tratado como **zuhanale variable**, no como un desconocido fijo. Se inicia con a **prior** $P(\theta)$ and se actualiza con la evidencia $D$:
 
 $$
-P(\theta | D) = \frac{P(D | $\theta) P(\theta)}{P(D)} = \frac{\text{Verosimilitud} \times \text{Prior} \times \text{Verosimilitud-Combined?}}{\ldots} 
-$$ (mejor forma práctica)
+P(\theta \mid D) = \frac{P(D \mid \theta) P(\theta)}{P(D)}
+$$
 
 $$
-P(\theta | X) = \frac{L(\theta; X) P(\theta)}{\int L(\theta; X) P(\theta) d\theta}.
-}
-
-Nota: En el texto original se ve convolución, pero el esquema es el correcto - Postarior} \propto \text{Verosimilitud} \times \text{Prior}.
+P(\theta \mid X) = \frac{L(\theta; X) P(\theta)}{\int L(\theta; X) P(\theta)\, d\theta}
 $$
+
+Nota: El esquema es el correcto: el posterior es proporcional a la verosimilitud por el prior.
 
 ## Ingeniería de Datos: aplicaciones prácticas
 
@@ -165,15 +164,13 @@ Algunos ejemplos prácticos donde la inferencia estadística resulta clave:
 
 ### A1. Distribución muestral de la media
 
-Si $X_i \stackrel{iid}{\sim}$ with $E[X_i]=\mu$, $Var(X_i)=\sigma^2$, then:
+Si $X_1,\ldots,X_n$ son independientes e idénticamente distribuidas, con $E[X_i]=\mu$ y $Var(X_i)=\sigma^2$, entonces:
 
 $$
-E[\bar{X}] = \mu,\qquad Var(\bar{X}) = \frac{\sigma^2}{n},\qquad SE(\bar{X}) = \frac{sigma^2}{\sqrt{n}}$? (mejor $SE(\bar{X}) = \frac{\sigma}{\sqrt{n}}$)
- 
+E[\bar{X}] = \mu,\qquad Var(\bar{X}) = \frac{\sigma^2}{n},\qquad SE(\bar{X}) = \frac{\sigma}{\sqrt{n}}
 $$
-SE(\bar{X}) = \frac{\sigma}{\sqrt{n}}$.
 
-$si $n$ large, by TCL: $\bar{X} \approx N(\mu, \sigma/n)$.
+Por el teorema central del límite, para $n$ grande, $\bar{X} \approx N\left(\mu, \frac{\sigma^2}{n}\right)$.
 
 ### A2. Valor crítico y cola
 

@@ -3,123 +3,191 @@ titulo: "Regresión lineal y regresión logística"
 asignatura: ingenieria-y-ciencia-de-datos-i
 fecha: 2026-10-20
 tema: "Semana 1 - Sesión 2"
-tags: [regresión-lineal, mínimos-cuadrados-ordinarios, ols, r-cuadrado, regresión-logística, odds-ratio, colinealidad, gauss-markov, diagnósticos]
-resResumen: "Regresión lineal por mínimos cuadrados ordinarios, bondad de ajuste, diagnósticos y supuestos. Introducción a la regresión logística binaria, función sigmoide y odds ratios."
+tags: [regresion-lineal, minimos-cuadrados-ordinarios, ols, r-cuadrado, regresion-logistica, odds-ratio, colinealidad, gauss-markov, diagnosticos]
+resumen: "Regresión lineal por mínimos cuadrados ordinarios, bondad de ajuste, supuestos y diagnósticos. Introducción a la regresión logística binaria, la función sigmoide y las razones de momios."
 borrador: false
 ---
 
-## Paradigmas: interpolación vs aproximación
+## Interpolación y regresión
 
-Antes de modelar, es importante distinguir dos enfoques:
-
-- **Interpolación**: Fuerza a la curva a pasar estrictamente por todos los puntos observados. Con polinomios de grado alto se obtiene el *polinomio interpolador de Vandermonde*. Esto puede conducir al **fenómeno de Runge**: oscilaciones salvajes fuera (y a veces dentro) del rango de datos, ajustando mayoritariamente ruido.
-- **Aproximación (regresión)**: Busca una función *suficientemente simple* que capture la tendencia estructural, minimizando el error global sin necesidad de pasar por cada punto individual. Es el enfoque utilizado en regresión.
+- **Interpolación**: construye una función que pasa por todos los puntos observados. Un polinomio de grado alto puede ajustarse demasiado a los datos y oscilar, especialmente cerca de los extremos del intervalo (fenómeno de Runge).
+- **Regresión**: estima una relación que describa la tendencia de los datos, sin exigir que la función pase por cada observación. El ajuste busca equilibrar la fidelidad a los datos y la complejidad del modelo.
 
 ## Regresión lineal simple y múltiple
 
-El modelo de regresión lineal relaciona una variable respuesta $Y$ con uno o más predictores $X_1,\ldots,X_p$:
+La regresión lineal relaciona una variable respuesta cuantitativa $Y$ con uno o más predictores $X_1,\ldots,X_p$. Para la observación $i$:
 
 $$
-Y_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip} + \varepsilon_i, \qquad i=1,\ldots,n.
+Y_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip} + \varepsilon_i,\qquad i=1,\ldots,n.
 $$
 
-Donde:
+- $\beta_0,\ldots,\beta_p$ son los coeficientes o parámetros del modelo.
+- $\varepsilon_i$ es el error aleatorio, que recoge la variabilidad no explicada por los predictores.
+- La media condicional del modelo es:
 
-- $\beta_0,\ldots,\beta_p$: **parámetros** desconocidos (coeficientes de regresión).
-- $\varepsilon_i$: **término de error aleatorio** (ruido estocástico), generalmente asumido con media cero.
-- $E[Y_i \mid X_i] = \beta_0 + \beta_{1}X_{i1} + \cdot
-\cdot \cdot + \beta_{p}X_{ip}$: **valor esperado** (línea/superficie de regresión).
+$$
+E[Y_i \mid X_{i1},\ldots,X_{ip}] = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}.
+$$
+
+En regresión simple hay un predictor; en regresión múltiple hay varios. El modelo es lineal en los coeficientes, aunque se pueden incluir transformaciones de los predictores.
 
 En forma matricial:
 
 $$
-\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}, \qquad \mathbf{X} \in \mathbb{R}^{n\times (p+1)},
-$$
-siendo la primera columna de $\mathbf{X} a vector [[1]]$
- n [1], [1], ..., [1]]$.
-
-## Mínimos cuadrados ordinarios (OLS)
-
-El método de **Mínimos Cuadrados Ordinarios (OLS)** estima $\boldsymbol{\beta} mediante la minimización del sumatorio de cuadrados de los residuos:
-
-$$
-S(\boldsymbol{\beta}) = \sum_{i=1}^{n} (Y_i - \hat{Y_i}) = \sum_{i=1}^{n} (Y_i - \boldsymbol{x_i}^\top \boldsymbol{\beta})^2 = (\mathbf{y} - \mathbf{X}\boldsymbol{\beta})^\top (\mathbf{y} - \mathbf{X}\boldsymbol{\beta}).
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon},
 $$
 
-Resolviendo $\nabla_{\boldsymbol{\beta}} S(\boldselect \boldsymbol{\beta}) = 0$ obtenemos las **ecuaciones normales**:
+donde $\mathbf{y}\in\mathbb{R}^{n}$, $\boldsymbol{\beta}\in\mathbb{R}^{p+1}$ y $\mathbf{X}\in\mathbb{R}^{n\times(p+1)}$. Si el modelo incluye intercepto, la primera columna de $\mathbf{X}$ está formada por unos.
+
+## Mínimos cuadrados ordinarios
+
+Los **mínimos cuadrados ordinarios (MCO; OLS, por sus siglas en inglés)** estiman los coeficientes minimizando la suma de los cuadrados de los residuos:
 
 $$
-\mathbf{X}^\top \mathbf{X}\boldsymbol{\beta} = \mathbf{X}^\top \mathbf{y}.
+S(\boldsymbol{\beta}) = \sum_{i=1}^{n}(Y_i-\mathbf{x}_i^\top\boldsymbol{\beta})^2
+= (\mathbf{y}-\mathbf{X}\boldsymbol{\beta})^\top(\mathbf{y}-\mathbf{X}\boldsymbol{\beta}).
 $$
 
-Si $(\mathbf{X}^\top \mathbf{X})$ es invertible, el estimador OLS viene dado por:
+Al igualar el gradiente de esta función a cero se obtienen las **ecuaciones normales**:
 
 $$
-\hat{\boldsymbol{\beta}} = ((\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\� \top \mathbf{y}).
+\mathbf{X}^\top\mathbf{X}\hat{\boldsymbol{\beta}} = \mathbf{X}^\top\mathbf{y}.
 $$
 
-Los valores ajustados y residuos son:
+Si las columnas de $\mathbf{X}$ son linealmente independientes, la solución es:
 
 $$
-\hat{\mathbf{y}} = \mathbf{X}\hat{\boldsymbol{\beta}} = \mathbf{H}\mathbf{y}, \qquad \hat{\boldsymbol{\varepsilon}} = \mathbf{y} - \hat{\mathbf{y}} = (I - \mathbf{H}) \mathbf{y}, \qquad \mathbf{H = (X)^\top \mathbf{X})^{-1}\mathbf{X}^\top.
+\hat{\boldsymbol{\beta}} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}.
 $$
 
-$\mathbf{H}$ se conoce as **matriz sombrero (*hat matrix*)** y representa la proyección ortogonal de $\mathbf{y} \text {sobre el subespacio columna of } \mathbf{X}$.
+Si $\mathbf{X}^\top\mathbf{X}$ no es invertible, los coeficientes no se pueden determinar de forma única mediante esta expresión; puede haber predictores redundantes o colinealidad perfecta.
 
-## Bondad de ajuste: $R^2$ and $R^2$ ajustado
-
-Para cuantificar qué proporción de la variabilidad de $Y$ es explicado por el modelo:
+Los valores ajustados y los residuos son:
 
 $$
-SCT = \sum_{i=1}^{n} (Y_i - \bar{Y})^2 = \sum_{i=1}^{n} (Y_i - \hat{Y_i})^2 + \sum_{i=1}^{n} (hat{Y_i} - $\bar{Y})^2 = SCE + SCR.
+\hat{\mathbf{y}} = \mathbf{X}\hat{\boldsymbol{\beta}} = \mathbf{H}\mathbf{y},
+\qquad
+\hat{\boldsymbol{\varepsilon}} = \mathbf{y}-\hat{\mathbf{y}},
+\qquad
+\mathbf{H} = \mathbf{X}(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top.
 $$
 
-- $SCT$: Suma de cuadrados total
-- $SCE$: Suma de cuadrados expliqué (debido to regresión)
-- $SCR$: Suma de cuadrados de los residuos
+La matriz $\mathbf{H}$ se denomina **matriz sombrero** (*hat matrix*): proyecta las observaciones sobre el espacio generado por las columnas de $\mathbf{X}$.
 
-El **coeficiente de determinación** $R^2$:
+## Bondad de ajuste
 
-$$
-R^2 = \frac{SCE}{SCT} = 1 - \frac{SCR}{SCT}.
-$$
-
-$R^2 \in [0,1]$, cuántos más grande, más variabilidad explica el modelo. **Advertencia:** añadir cualquier predictor (aun sin sentido) tiende to be up, $R^2$.
-
-Para penalizar la complejidad del modelo se utiliza el **$R^2$ ajustado**:
+Con intercepto en el modelo, la variabilidad total se descompone en variabilidad explicada y residual:
 
 $$
-\bar{R^2} = 1 - (1 - R^2) \frac{n-1}{n-p-1}.
-$
+\underbrace{\sum_{i=1}^{n}(Y_i-\bar{Y})^2}_{SCT}
+=
+\underbrace{\sum_{i=1}^{n}(\hat{Y}_i-\bar{Y})^2}_{SCE}
++
+\underbrace{\sum_{i=1}^{n}(Y_i-\hat{Y}_i)^2}_{SCR}.
 $$
 
-## Contrastes global y parciales
-V
+- $SCT$: suma de cuadrados total.
+- $SCE$: suma de cuadrados explicada por la regresión.
+- $SCR$: suma de cuadrados residual.
 
-El **contraste $F$ global** comprueba si al menos one predictor es significativo:
-
-$$
-H_0: \beta_1 = \beta_2 = \cdots = $\beta_p = 0, \qquad H_1: \exists j, \beta_j != 0.
-$$
-
-Estadística $F$:
+El **coeficiente de determinación** mide la proporción de la variabilidad muestral de $Y$ explicada por el modelo:
 
 $$
-F = \frac{SCE / p}{SCR / (n-p-1)} \sim F_{p, n-p-1} \text { bajo $H_0$}.
+R^2 = \frac{SCE}{SCT} = 1-\frac{SCR}{SCT}.
 $$
 
-Para contrastar individualmente un coeficiente: $t$-test $\mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \mid \tag{1:}\}$
-Fo de:
+En una regresión OLS con intercepto, $R^2$ está entre 0 y 1. Un valor alto no demuestra que el modelo sea correcto ni que exista una relación causal. Además, al añadir predictores, $R^2$ no disminuye, aunque estos aporten poco.
 
+El **$R^2$ ajustado** penaliza la inclusión de predictores mediante los grados de libertad:
 
+$$
+R^2_{\mathrm{ajustado}} = 1-(1-R^2)\frac{n-1}{n-p-1},
+$$
 
+donde $n$ es el número de observaciones y $p$ el número de predictores, sin contar el intercepto. Puede disminuir al añadir un predictor que no mejore suficientemente el ajuste.
 
-```
+## Contrastes de hipótesis
 
+El **contraste $F$ global** evalúa si todos los coeficientes de los predictores son simultáneamente cero:
 
+$$
+H_0:\beta_1=\cdots=\beta_p=0,
+\qquad
+H_1:\text{al menos un }\beta_j\ne 0.
+$$
 
+Bajo $H_0$ y los supuestos del modelo, el estadístico es:
 
-```
-Cosa en Puntos 4-15: Determination and Diagram? (lot of missing text in the original) - let us write cleanly.
+$$
+F = \frac{SCE/p}{SCR/(n-p-1)} \sim F_{p,n-p-1}.
+$$
 
-Pero vamos to fix the response and write a complete clean note. Following the agent instructions, I will translate and format the rest properly.
+Un resultado significativo indica evidencia de que al menos un predictor está asociado con la respuesta; no implica que todos lo estén ni demuestra causalidad.
+
+Para contrastar un coeficiente individual, por ejemplo $H_0:\beta_j=0$, se utiliza un estadístico $t$:
+
+$$
+t_j = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)}.
+$$
+
+Su interpretación se realiza manteniendo constantes los demás predictores del modelo. Los valores $p$ y los intervalos de confianza dependen de los supuestos usados para calcular los errores estándar.
+
+## Supuestos y diagnóstico del modelo lineal
+
+Para las propiedades clásicas de OLS se consideran los siguientes supuestos:
+
+1. **Linealidad en los parámetros**: la media condicional está correctamente representada por la forma del modelo.
+2. **Exogeneidad**: el error tiene media condicional cero dado el conjunto de predictores, $E[\varepsilon_i\mid\mathbf{X}]=0$.
+3. **Ausencia de dependencia entre errores**: las observaciones y los errores no presentan una dependencia no modelada.
+4. **Homoscedasticidad**: la varianza condicional del error es constante, $Var(\varepsilon_i\mid\mathbf{X})=\sigma^2$.
+5. **Ausencia de colinealidad perfecta**: ningún predictor es combinación lineal exacta de los demás.
+
+El teorema de **Gauss-Markov** establece que, bajo las condiciones lineales, exogeneidad, homoscedasticidad y ausencia de colinealidad perfecta, OLS es el estimador lineal insesgado de varianza mínima (BLUE). La normalidad de los errores no es necesaria para este resultado, pero se suele asumir para obtener inferencia exacta en muestras pequeñas.
+
+Herramientas habituales de diagnóstico:
+
+- **Residuos frente a valores ajustados**: patrones curvos pueden señalar falta de linealidad; una dispersión en forma de abanico puede indicar heteroscedasticidad.
+- **Gráfico Q-Q de residuos**: ayuda a evaluar si la distribución de los errores se aproxima a una normal.
+- **Residuos frente al orden temporal o espacial**: puede revelar dependencia.
+- **Colinealidad**: correlaciones altas o factores de inflación de la varianza elevados pueden volver inestables los coeficientes y aumentar sus errores estándar.
+- **Observaciones influyentes**: residuos atípicos, alto apalancamiento o medidas de influencia como la distancia de Cook ayudan a detectar observaciones que afectan mucho al ajuste.
+
+Un diagnóstico debe guiar una revisión del modelo y de los datos; no justifica eliminar observaciones automáticamente.
+
+## Regresión logística binaria
+
+La regresión logística se utiliza cuando la respuesta $Y$ es binaria, por ejemplo, $Y\in\{0,1\}$. Modela la probabilidad condicional de la clase 1:
+
+$$
+p(\mathbf{x}) = P(Y=1\mid\mathbf{X}=\mathbf{x})
+= \frac{1}{1+\exp(-\eta)},
+\qquad
+\eta = \beta_0+\beta_1x_1+\cdots+\beta_px_p.
+$$
+
+La función sigmoide transforma cualquier valor real de $\eta$ en una probabilidad entre 0 y 1. De forma equivalente, el **logit** de la probabilidad es lineal en los predictores:
+
+$$
+\log\left(\frac{p(\mathbf{x})}{1-p(\mathbf{x})}\right)
+= \beta_0+\beta_1x_1+\cdots+\beta_px_p.
+$$
+
+Los coeficientes se estiman normalmente por **máxima verosimilitud**, no minimizando la suma de cuadrados. Para un predictor $X_j$, un aumento de una unidad, manteniendo los demás constantes, cambia el logaritmo de las *odds* en $\beta_j$ y multiplica las *odds* por:
+
+$$
+\text{OR}_j = \exp(\beta_j).
+$$
+
+Esta cantidad es la **razón de momios** (*odds ratio*). Si $\text{OR}_j>1$, las *odds* aumentan; si $\text{OR}_j<1$, disminuyen. Un *odds ratio* no es directamente un cambio en la probabilidad: el cambio de probabilidad depende de la probabilidad inicial.
+
+Para clasificar, se puede comparar la probabilidad estimada con un umbral, a menudo 0.5. Ese umbral no es obligatorio: debe elegirse según el coste de falsos positivos y falsos negativos y el objetivo de la aplicación. La evaluación puede incluir matriz de confusión, precisión, exhaustividad (*recall*), especificidad, ROC-AUC y, cuando hay desbalance de clases, precisión-exhaustividad.
+
+## Regresión lineal y logística: diferencias clave
+
+| Aspecto | Regresión lineal | Regresión logística binaria |
+|---|---|---|
+| Tipo de respuesta | Cuantitativa | Binaria |
+| Cantidad modelada | Media condicional de $Y$ | Probabilidad de $Y=1$ |
+| Función de enlace | Identidad | Logit |
+| Estimación habitual | Mínimos cuadrados | Máxima verosimilitud |
+| Interpretación de coeficientes | Cambio esperado en $Y$ por unidad del predictor | Cambio en log-*odds*; $\exp(\beta_j)$ es el *odds ratio* |
