@@ -1,3 +1,5 @@
+import type { CollectionEntry } from 'astro:content';
+
 const formatoFecha = new Intl.DateTimeFormat('es-ES', {
   day: 'numeric',
   month: 'long',
@@ -6,6 +8,25 @@ const formatoFecha = new Intl.DateTimeFormat('es-ES', {
 
 export function formatDate(fecha: Date): string {
   return formatoFecha.format(fecha);
+}
+
+export function ordenarApuntes(apuntes: CollectionEntry<'apuntes'>[]): CollectionEntry<'apuntes'>[] {
+  const ordenesPorAsignatura = new Map<string, Set<number>>();
+
+  for (const apunte of apuntes) {
+    const asignaturaId = apunte.data.asignatura.id;
+    const ordenes = ordenesPorAsignatura.get(asignaturaId) ?? new Set<number>();
+    if (ordenes.has(apunte.data.orden)) {
+      throw new Error(`El orden ${apunte.data.orden} está duplicado en la asignatura "${asignaturaId}".`);
+    }
+    ordenes.add(apunte.data.orden);
+    ordenesPorAsignatura.set(asignaturaId, ordenes);
+  }
+
+  return [...apuntes].sort(
+    (a, b) =>
+      a.data.asignatura.id.localeCompare(b.data.asignatura.id) || a.data.orden - b.data.orden,
+  );
 }
 
 export function readingTime(body?: string): number {

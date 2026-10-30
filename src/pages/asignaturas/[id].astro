@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { url } from '../../lib/site';
-import { formatDate, pluralizar } from '../../lib/utils';
+import { formatDate, ordenarApuntes, pluralizar } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const asignaturas = await getCollection('asignaturas');
@@ -19,13 +19,9 @@ interface Props {
 
 const { asignatura } = Astro.props;
 
-const apuntes = (
-  await getCollection(
-    'apuntes',
-    ({ data }) =>
-      data.asignatura.id === asignatura.id && (import.meta.env.DEV || !data.borrador),
-  )
-).sort((a, b) => a.data.fecha.getTime() - b.data.fecha.getTime());
+const apuntes = ordenarApuntes(
+  await getCollection('apuntes', ({ data }) => data.asignatura.id === asignatura.id),
+);
 ---
 
 <BaseLayout
@@ -52,17 +48,16 @@ const apuntes = (
       </p>
     ) : (
       <ol class="apuntes-lista">
-        {apuntes.map((apunte, indice) => (
+        {apuntes.map((apunte) => (
           <li>
             <a class="apunte-card" href={url(`/apuntes/${apunte.id}/`)}>
-              <span class="apunte-num">{String(indice + 1).padStart(2, '0')}</span>
+              <span class="apunte-num">{String(apunte.data.orden).padStart(2, '0')}</span>
               <div class="apunte-info">
                 <h3>{apunte.data.titulo}</h3>
                 <p>
                   {apunte.data.tema && <span class="tema">{apunte.data.tema}</span>}
                   {apunte.data.tema && <span aria-hidden="true"> · </span>}
                   {formatDate(apunte.data.fecha)}
-                  {apunte.data.borrador && <span class="borrador">Borrador</span>}
                 </p>
               </div>
               <span class="apunte-arrow" aria-hidden="true">→</span>

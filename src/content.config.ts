@@ -23,10 +23,10 @@ const apuntes = defineCollection({
     titulo: z.string(),
     asignatura: reference('asignaturas'),
     fecha: z.coerce.date(),
+    orden: z.number().int().positive(),
     tema: z.string().optional(),
     tags: z.array(z.string()).default([]),
     resumen: z.string().optional(),
-    borrador: z.boolean().default(false),
   }),
 });
 

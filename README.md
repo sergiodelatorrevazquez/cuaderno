@@ -93,10 +93,10 @@ Crea un `.md` dentro de `src/content/apuntes/<id-asignatura>/`:
 titulo: "Búsqueda no informada y búsqueda A*"
 asignatura: sistemas-inteligentes
 fecha: 2026-09-29
+orden: 1
 tema: Tema 2
 tags: [búsqueda, heurísticas]
 resumen: Comparativa de BFS, DFS, coste uniforme y A*.
-borrador: false
 ---
 ```
 
@@ -105,10 +105,10 @@ borrador: false
 | `titulo` | Sí | Título del apunte. |
 | `asignatura` | Sí | **ID** de la asignatura (nombre del archivo sin `.md`). |
 | `fecha` | Sí | Fecha en formato `AAAA-MM-DD`. |
+| `orden` | Sí | Índice entero positivo, único dentro de la asignatura. Los apuntes se muestran de menor a mayor. |
 | `tema` | No | Por ejemplo, `Tema 2`. |
 | `tags` | No | Lista de etiquetas. |
 | `resumen` | No | Entradilla que aparece bajo el título. |
-| `borrador` | No | Si es `true`, solo se muestra en desarrollo. |
 
 El **ID** del apunte se construye con la ruta del archivo. Por ejemplo:
 
@@ -119,9 +119,7 @@ src/content/apuntes/sistemas-inteligentes/tema-02-busqueda.md
 
 El cuerpo admite GitHub Flavored Markdown: tablas, listas de tareas, bloques de código con resaltado, citas, etc.
 
-## Borradores
-
-Con `borrador: true` el apunte se ve en `npm run dev`, pero **no se publica** en el build de producción. Es útil para notas a medio hacer.
+La fecha se muestra como metadato, pero no determina el orden. Para añadir un apunte al final de una asignatura, asígnale el siguiente índice libre de esa asignatura.
 
 ## Despliegue
 

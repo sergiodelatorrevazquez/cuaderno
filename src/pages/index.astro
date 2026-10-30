@@ -2,23 +2,29 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/site';
-import { formatDate, pluralizar } from '../lib/utils';
+import { formatDate, ordenarApuntes, pluralizar } from '../lib/utils';
 
 const asignaturas = (await getCollection('asignaturas')).sort(
   (a, b) => a.data.orden - b.data.orden || a.data.nombre.localeCompare(b.data.nombre, 'es'),
 );
 
-const apuntes = (await getCollection('apuntes', ({ data }) => import.meta.env.DEV || !data.borrador)).sort(
-  (a, b) => b.data.fecha.getTime() - a.data.fecha.getTime(),
-);
+const apuntes = ordenarApuntes(await getCollection('apuntes'));
 
 const apuntesPorAsignatura = new Map<string, number>();
+const ultimoApuntePorAsignatura = new Map<string, (typeof apuntes)[number]>();
 for (const apunte of apuntes) {
   const id = apunte.data.asignatura.id;
   apuntesPorAsignatura.set(id, (apuntesPorAsignatura.get(id) ?? 0) + 1);
+  const ultimo = ultimoApuntePorAsignatura.get(id);
+  if (!ultimo || apunte.data.orden > ultimo.data.orden) {
+    ultimoApuntePorAsignatura.set(id, apunte);
+  }
 }
 
-const recientes = apuntes.slice(0, 6);
+const ultimosPorAsignatura = asignaturas.flatMap((asignatura) => {
+  const apunte = ultimoApuntePorAsignatura.get(asignatura.id);
+  return apunte ? [apunte] : [];
+});
 ---
 
 <BaseLayout>
@@ -72,15 +78,15 @@ const recientes = apuntes.slice(0, 6);
     )}
   </section>
 
-  {recientes.length > 0 && (
+  {ultimosPorAsignatura.length > 0 && (
     <section class="section">
       <header class="section-header">
-        <h2>Últimos apuntes</h2>
-        <p class="muted">Lo último que he añadido al cuaderno.</p>
+        <h2>Último apunte de cada asignatura</h2>
+        <p class="muted">El apunte con el índice más alto de cada asignatura.</p>
       </header>
 
       <ul class="note-list">
-        {recientes.map((apunte) => {
+        {ultimosPorAsignatura.map((apunte) => {
           const asignatura = asignaturas.find((item) => item.id === apunte.data.asignatura.id);
           return (
             <li>

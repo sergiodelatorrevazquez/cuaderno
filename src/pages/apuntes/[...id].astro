@@ -3,13 +3,10 @@ import { getCollection, getEntry, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { url } from '../../lib/site';
-import { formatDate, readingTime } from '../../lib/utils';
+import { formatDate, ordenarApuntes, readingTime } from '../../lib/utils';
 
 export async function getStaticPaths() {
-  const apuntes = await getCollection(
-    'apuntes',
-    ({ data }) => import.meta.env.DEV || !data.borrador,
-  );
+  const apuntes = ordenarApuntes(await getCollection('apuntes'));
   return apuntes.map((apunte) => ({
     params: { id: apunte.id },
     props: { apunte },
@@ -27,14 +24,9 @@ const { Content, headings } = await render(apunte);
 const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const minutos = readingTime(apunte.body);
 
-const relacionados = (
-  await getCollection(
-    'apuntes',
-    ({ data }) =>
-      data.asignatura.id === apunte.data.asignatura.id &&
-      (import.meta.env.DEV || !data.borrador),
-  )
-).sort((a, b) => a.data.fecha.getTime() - b.data.fecha.getTime());
+const relacionados = ordenarApuntes(
+  await getCollection('apuntes', ({ data }) => data.asignatura.id === apunte.data.asignatura.id),
+);
 
 const indiceActual = relacionados.findIndex((item) => item.id === apunte.id);
 const anterior = indiceActual > 0 ? relacionados[indiceActual - 1] : null;
@@ -85,7 +77,6 @@ const fechaISO = apunte.data.fecha.toISOString().slice(0, 10);
               <span>{apunte.data.tema}</span>
             </>
           )}
-          {apunte.data.borrador && <span class="borrador">Borrador</span>}
         </div>
 
         {apunte.data.tags.length > 0 && (
