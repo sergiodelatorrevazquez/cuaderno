@@ -3,19 +3,19 @@ titulo: "Fundamentos matemáticos y computacionales del aprendizaje profundo: in
 asignatura: aprendizaje-profundo
 fecha: 2026-10-22
 orden: 1
-tema: "Semana 1 - Sesión 1"
+tema: "Sesión 1"
 tags: [fundamentos, tensores, capas-afines, ReLU, perceptrón-multicapa, parámetros, entrenamiento, PyTorch, Keras]
 resumen: "Introducción a las redes neuronales como funciones entrenables: tareas de aprendizaje, parámetros y activaciones, tensores y lotes, operaciones vectorizadas, capas afines, ReLU, clasificación y entrenamiento."
 ---
 
 ## Página 1 — Fundamentos matemáticos y computacionales del aprendizaje profundo
 
-**Título:** Fundamentos matemáticos y computacionales del aprendizaje profundo.
-**Subtítulo:** Introducción: una función entrenable.
-**Curso y sesión:** Aprendizaje profundo, semana 1, sesión 1.
-**Duración indicada:** 90 minutos.
-**Horario impreso:** jueves, 19:20–20:20.
-**Docente:** Francisco R. Villatoro.
+**Título:** Fundamentos matemáticos y computacionales del aprendizaje profundo.  
+**Subtítulo:** Introducción: una función entrenable.  
+**Curso y sesión:** Aprendizaje profundo, semana 1, sesión 1.  
+**Duración indicada:** 90 minutos.  
+**Horario impreso:** jueves, 19:20–20:20.  
+**Docente:** Francisco R. Villatoro.  
 **Contexto:** curso de máster en Aprendizaje Profundo. Las diapositivas están en inglés; la discusión en el aula es principalmente en español.
 
 ## Página 2 — Un curso, cuatro bloques complementarios

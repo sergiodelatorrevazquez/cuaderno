@@ -3,7 +3,7 @@ titulo: "Gradientes y diferenciación automática"
 asignatura: aprendizaje-profundo
 fecha: 2026-11-02
 orden: 3
-tema: "Semana 1 - Sesión 3"
+tema: "Sesión 3"
 tags: [gradientes, autograd, backpropagación, softmax, entropía-cruzada, PyTorch, TensorFlow, Keras]
 resumen: "Extensión de la sesión anterior sobre la sensibilidad del error frente a los pesos, la regla de la cadena en reversa, la diferenciación automática y la actualización de parámetros con gradientes."
 ---

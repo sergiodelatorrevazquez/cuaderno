@@ -3,7 +3,7 @@ titulo: "De las puntuaciones a las probabilidades y pérdidas: softmax, temperat
 asignatura: aprendizaje-profundo
 fecha: 2026-10-22
 orden: 2
-tema: "Semana 1 - Sesión 2"
+tema: "Sesión 2"
 tags: [softmax, temperatura, entropia-cruzada, log-verosimilitud, pytorch, tensorflow]
 resumen: "Desarrollo página por página de la conversión de logits en probabilidades, la softmax y su estabilidad numérica, la verosimilitud, la entropía cruzada, la temperatura y su implementación en PyTorch y Keras."
 ---
