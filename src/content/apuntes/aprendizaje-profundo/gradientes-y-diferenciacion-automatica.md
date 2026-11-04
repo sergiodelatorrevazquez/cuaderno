@@ -1,7 +1,7 @@
 ---
 titulo: "Gradientes y diferenciación automática"
 asignatura: aprendizaje-profundo
-fecha: 2026-11-02
+fecha: 2026-10-23
 orden: 3
 tema: "Sesión 3"
 tags: [gradientes, autograd, backpropagación, softmax, entropía-cruzada, PyTorch, TensorFlow, Keras]
