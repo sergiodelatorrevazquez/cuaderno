@@ -1,7 +1,7 @@
 ---
 titulo: "Mini-batches, momentum y Adam"
 asignatura: aprendizaje-profundo
-fecha: 2026-10-24
+fecha: 2026-10-29
 orden: 4
 tema: "Sesión 4"
 tags: [mini-batches, SGD, momentum, Adam, optimización, gradientes, aprendizaje-profundo]
