@@ -1,9 +1,9 @@
 ---
 titulo: "Gradientes softmax en precisión finita"
 asignatura: aprendizaje-profundo
-fecha: 2026-10-31
+fecha: 2026-10-30
 orden: 7
-tema: "Sesión 5 — paper discussion"
+tema: "Sesión 6 — paper discussion"
 tags: [softmax, cross-entropy, precision-finita, Adam, atención, BF16, arXiv, aprendizaje-profundo]
 resumen: "Discusión de dos artículos sobre la estabilidad numérica del softmax y la entropía cruzada en precisión finita, así como sobre el deterioro del gradiente en atención BF16 y correcciones de backward."
 ---
