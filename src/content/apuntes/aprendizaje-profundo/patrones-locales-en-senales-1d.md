@@ -3,7 +3,7 @@ titulo: "Patrones locales en señales 1D"
 asignatura: aprendizaje-profundo
 fecha: 2026-11-05
 orden: 8
-tema: "Semana 3 — Sesión 7"
+tema: "Sesión 7"
 tags:
   - patrones-locales
   - convolucion-1d

@@ -3,7 +3,7 @@ titulo: "Convolución bidimensional y pooling"
 asignatura: aprendizaje-profundo
 fecha: 2026-11-05
 orden: 9
-tema: "Semana 3 — Sesión 8"
+tema: "Sesión 8"
 tags:
   - convolucion-2d
   - pooling
