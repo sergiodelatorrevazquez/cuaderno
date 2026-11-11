@@ -181,7 +181,7 @@ $$
 
 Para $\varepsilon = 10^{-8}$ y $g_1 > 0$:
 
-| $g_1$ | $|\Delta w_1|/\eta$ | Interpretación |
+| $g_1$ | $\lvert\Delta w_1\rvert/\eta$ | Interpretación |
 |---|---:|---|
 | $10^{-1}$ | $0.9999999$ | $\varepsilon$ es despreciable |
 | $10^{-6}$ | $0.9900990$ | efecto pequeño |
